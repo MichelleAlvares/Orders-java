@@ -1,0 +1,50 @@
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 90MB # File size limit
+      max-request-size: 90MB # Total request size for a multipart/form-data
+  application:
+    name: orders
+  jpa:
+    #show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
+      auto-ddl: create-drop
+    properties:
+      hibernate:
+        format_sql:    true
+        jdbc:
+          batch_size:  30
+        order_inserts: true
+        order_updates: true
+        #generate_statistics: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: "jdbc:postgresql://0.0.0.0:54320/postgres"
+    username: postgres
+    password: my_password
+  security:
+    user:
+      name: me
+      password: mee
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus, loggers, metrics
+  endpoint:
+    health:
+      show-details: always
+    loggers:
+      enabled: true
+
+logging:
+  level:
+    root: INFO
+
+file:
+  extension: csv
+page:
+  size: 10

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head lang="en">
+    <th:block th:include="base :: head"/>
+</head>
+<body>
+<div class="text-right">
+    <form name="logoutForm" th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out">
+    </form>
+    <h1 class="text-center alignment">Upload your CSV file</h1>
+    <p></p>
+    <div class="text-center alignment">
+        <div class="alert alert-danger" role="alert" th:if="${status != null && !status}">
+            <strong>Error:</strong>
+            <span th:text="${message}"></span>
+        </div>
+        <form method="POST" th:action="@{/csv}" enctype="multipart/form-data">
+            <label class="btn btn-default">
+                Browse <input type="file" name="file">
+            </label>
+            <p>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </p>
+        </form>
+    </div>
+</body>
+</html>

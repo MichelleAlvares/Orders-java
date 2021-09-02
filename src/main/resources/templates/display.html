@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Index page</title>
+    <th:block th:include="base :: head"/>
+    <!--    th {
+        text-align: center;
+        font-weight: bold;
+        border-top: none !important;
+        }
+
+        th, td {
+        white-space: nowrap;
+        }
+            td {
+            width: 300px;
+            text-align: right;
+            border: 1px solid black;
+            padding: 5px;
+        }
+
+        th {
+            width: 300px;
+            text-align: right;
+            border: 1px solid black;
+            padding: 5px;
+        }
+
+               table.table-bordered{
+            border:1px solid grey;
+            margin-top:20px;
+            width: 300px;
+          }
+        table.table-bordered > thead > tr > th{
+            border:1px solid grey;
+            width: 300px;
+        }
+        table.table-bordered > tbody > tr > td{
+            border:1px solid grey;
+            width: 300px;
+        }
+
+
+                table.table-bordered{
+            width: 75%;
+          }
+        table.table-bordered > thead > tr > th{
+            width: 75%;
+        }
+        table.table-bordered > tbody > tr > td{
+            width: 75% ;
+        }
+
+                th, td {
+
+        white-space: nowrap;
+        }
+        -->
+    <style type="text/css">
+
+        th, td {
+        white-space: nowrap;
+        }
+
+
+    </style>
+</head>
+<body>
+<form class="text-right" name="logoutForm" th:action="@{/logout}" method="post">
+    <input type="submit" value="Sign Out">
+</form>
+<div class="container">
+    <h1 class="text-center alignment">Orders</h1>
+
+    <table class="table table-alignment">
+        <thead id="Orders">
+        <tr>
+            <th scope="col">Region</th>
+            <th scope="col">Country</th>
+            <th scope="col">Item Type</th>
+            <th scope="col">Sales Channel</th>
+            <th scope="col">Order Priority</th>
+            <th scope="col">Order Date</th>
+            <th scope="col">Order ID</th>
+            <th scope="col">Ship Date</th>
+            <th scope="col">Units Sold</th>
+            <th scope="col">Unit Price</th>
+            <th scope="col">Unit Cost</th>
+            <th scope="col">Total Revenue</th>
+            <th scope="col">Total Cost</th>
+            <th scope="col">Total Profit</th>
+            <th scope="col">NRIC</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${responseEntity.orders}">
+            <td th:text="${order.region}"></td>
+            <td th:text="${order.country}"></td>
+            <td th:text="${order.item_type}"></td>
+            <td th:text="${order.sales_channel}"></td>
+            <td th:text="${order.order_priority}"></td>
+            <td th:text="${order.order_date}"></td>
+            <td th:text="${order.order_id}"></td>
+            <td th:text="${order.ship_date}"></td>
+            <td th:text="${order.units_sold}"></td>
+            <td th:text="${order.unit_price}"></td>
+            <td th:text="${order.unit_cost}"></td>
+            <td th:text="${order.total_revenue}"></td>
+            <td th:text="${order.total_cost}"></td>
+            <td th:text="${order.total_profit}"></td>
+            <td th:text="${order.nric}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <!-- Pagination control -->
+    <!-- Hardcoding the default page-size as 10. User can create a dropdown to select the different page-sizes. -->
+    <div th:if="${responseEntity.page['totalPages'] > 1}">
+        <nav>
+            <ul class="pagination justify-content-center flex-wrap">
+                <li th:class="${responseEntity.page['currentPage'] > 1}">
+                    <a th:href="@{'/csv/1'}" class="page-link">First</a>
+                </li>
+                <li th:if="${responseEntity.page['currentPage'] > 1}">
+                    <a th:href="@{'/csv/' + ${responseEntity.page['currentPage'] - 1}}" class="page-link">Previous</a>
+                </li>
+
+                <th:block th:if="${responseEntity.page['totalPages'] <= 10}">
+                    <li th:each="i: ${#numbers.sequence(1, responseEntity.page['totalPages'])}"
+                        th:class="${responseEntity.page['currentPage'] != i}">
+                        <a th:href="@{'/csv/' + ${i}}" class="page-link">[[${i}]]</a>
+                    </li>
+                </th:block>
+
+                <th:block th:if="${responseEntity.page['totalPages'] > 10}">
+                    <th:block
+                            th:if="${responseEntity.page['currentPage'] <=3 || responseEntity.page['currentPage'] >= responseEntity.page['totalPages'] - 2}">
+                        <li th:each="i: ${#numbers.sequence(1, 3)}"
+                            th:class="${responseEntity.page['currentPage'] != i}">
+                            <a th:href="@{'/csv/' + ${i}}" class="page-link">[[${i}]]</a>
+                        </li>
+                        <a th:href="@{'/csv/4'}" class="page-link">...</a>
+                        <li th:each="i: ${#numbers.sequence(responseEntity.page['totalPages'] - 2, responseEntity.page['totalPages'])}"
+                            th:class="${responseEntity.page['currentPage'] != i}">
+                            <a th:href="@{'/csv/' + ${i}}" class="page-link">[[${i}]]</a>
+                        </li>
+                    </th:block>
+
+                    <th:block
+                            th:if="${responseEntity.page['currentPage'] > 3 && responseEntity.page['currentPage'] < responseEntity.page['totalPages'] - 2}">
+                        <a th:href="@{'/csv/' + ${responseEntity.page['currentPage'] - 3}}" class="page-link">...</a>
+                        <li th:each="i: ${#numbers.sequence(responseEntity.page['currentPage'] - 2, responseEntity.page['currentPage'] + 2)}"
+                            th:class="${responseEntity.page['currentPage'] != i}">
+                            <a th:href="@{'/csv/' + ${i}}" class="page-link">[[${i}]]</a>
+                        </li>
+                        <a th:href="@{'/csv/' + ${responseEntity.page['currentPage'] + 3}}" class="page-link">...</a>
+                    </th:block>
+                </th:block>
+
+
+                <li th:if="${responseEntity.page['currentPage'] < responseEntity.page['totalPages']}">
+                    <a th:href="@{'/csv/' + ${responseEntity.page['currentPage'] + 1}}" class="page-link">Next</a>
+                </li>
+                <li th:class="${responseEntity.page['currentPage'] < responseEntity.page['totalPages']}">
+                    <a th:href="@{'/csv/' + ${responseEntity.page['totalPages']}}" class="page-link">Last</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
