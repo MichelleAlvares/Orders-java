@@ -3,9 +3,11 @@ package com.group.orders.service;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.StreamSupport;
 
+import com.group.orders.repository.BatchExecutor;
 import com.group.orders.repository.OrderRepository;
-import com.group.orders.dao.OrderDto;
+import com.group.orders.dto.OrderDto;
 import com.group.orders.model.OrderItem;
 import com.group.orders.util.Util;
 import org.apache.commons.csv.CSVFormat;
@@ -28,13 +30,15 @@ public class UploadService {
     private Logger LOGGER = LoggerFactory.getLogger(UploadService.class);
     private OrderRepository orderRepository;
     private Util util;
+    private BatchExecutor batchExecutor;
 
     @Value("${page.size}")
     private int PAGE_SIZE;
 
-    public UploadService(@Autowired OrderRepository orderRepository, @Autowired Util util) {
+    public UploadService(@Autowired OrderRepository orderRepository, @Autowired Util util, @Autowired BatchExecutor batchExecutor) {
         this.orderRepository = orderRepository;
         this.util = util;
+        this.batchExecutor = batchExecutor;
     }
 
     public String uploadFile(MultipartFile file, Model model) {
@@ -42,21 +46,20 @@ public class UploadService {
         if (util.isCSVFile(file)) {
             try {
                 orders = parseCsvFile(file.getInputStream());
+                orderRepository.truncate();
+
+                LOGGER.info("Inserting data");
+                batchExecutor.batchInsertAsync(orders);
             } catch (Exception e) {
                 model.addAttribute("message", "Error while processing file");
                 model.addAttribute("status", false);
                 return "index";
             }
-            LOGGER.info("Start Truncate");
-            orderRepository.truncate();
-            LOGGER.info("End Truncate");
-            LOGGER.info("Inserting data");
-            orderRepository.saveAll(orders);
             LOGGER.info("Data Inserted");
             model.addAttribute("status", true);
             model.addAttribute("responseEntity", getOrders(1));
             return "display";
-        }else {
+        } else {
             model.addAttribute("message", "Please select a CSV file to upload.");
             model.addAttribute("status", false);
             return "index";
@@ -67,13 +70,11 @@ public class UploadService {
         LOGGER.info("Parsing file");
         BufferedReader fileReader = null;
         CSVParser csvParser = null;
-
         List<OrderItem> orders = new ArrayList<>();
 
         try {
             fileReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-            csvParser = new CSVParser(fileReader,
-                    CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim().withNullString(""));
+            csvParser = new CSVParser(fileReader, CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim().withNullString(""));
 
             Iterable<CSVRecord> records = csvParser.getRecords();
 
@@ -83,7 +84,7 @@ public class UploadService {
             LOGGER.info("NRIC numbers generated {}", orders.size());
 
         } catch (Exception e) {
-            LOGGER.debug("Reading CSV Error!");
+            LOGGER.debug("Error reading CSV");
             e.printStackTrace();
         } finally {
             try {
@@ -118,7 +119,7 @@ public class UploadService {
         page.put("totalElements", (int) orderItemPage.getTotalElements());
         LOGGER.debug("pageNumber {}", pageNumber);
         LOGGER.debug("totalPages {}", orderItemPage.getTotalPages());
-        LOGGER.debug("totalElements {}", (int) orderItemPage.getTotalElements());
+        LOGGER.info("totalElements {}", (int) orderItemPage.getTotalElements());
         return OrderDto.create(orderItemPage.getContent(), page);
     }
 

@@ -1,6 +1,6 @@
 package com.group.orders.constants;
 
-import com.group.orders.dao.OrderDto;
+import com.group.orders.dto.OrderDto;
 import com.group.orders.model.OrderItem;
 
 import java.util.List;

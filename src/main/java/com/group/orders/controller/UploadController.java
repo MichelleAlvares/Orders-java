@@ -17,8 +17,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 @Controller()
 public class UploadController {
     private Logger LOGGER = LoggerFactory.getLogger(UploadController.class);
