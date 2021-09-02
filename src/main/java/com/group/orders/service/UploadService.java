@@ -116,9 +116,9 @@ public class UploadService {
         page.put("currentPage", pageNumber);
         page.put("totalPages", orderItemPage.getTotalPages());
         page.put("totalElements", (int) orderItemPage.getTotalElements());
-        LOGGER.info("pageNumber {}", pageNumber);
-        LOGGER.info("totalPages {}", orderItemPage.getTotalPages());
-        LOGGER.info("totalElements {}", (int) orderItemPage.getTotalElements());
+        LOGGER.debug("pageNumber {}", pageNumber);
+        LOGGER.debug("totalPages {}", orderItemPage.getTotalPages());
+        LOGGER.debug("totalElements {}", (int) orderItemPage.getTotalElements());
         return OrderDto.create(orderItemPage.getContent(), page);
     }
 
