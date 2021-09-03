@@ -8,6 +8,10 @@ import static java.util.Map.ofEntries;
 
 public class AppConstants {
 
+    public static final List<String> orderPriorityList = List.of("M", "H", "L", "C");
+
+    public static final List<String> salesChannels = List.of("Online", "Offline");
+
     public static final List<Character> nricSartingCharacter = List.of('S', 'T', 'F', 'G');
 
     public static final List<Character> add4Characters = List.of('T', 'G');

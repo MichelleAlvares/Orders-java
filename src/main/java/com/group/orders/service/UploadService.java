@@ -78,7 +78,7 @@ public class UploadService {
             Iterable<CSVRecord> records = csvParser.getRecords();
 
             records.forEach(record -> {
-                util.validateRecord(record, orders);
+                util.validateAndAddRecord(record, orders);
             });
 
             LOGGER.info("NRIC numbers generated {}", orders.size());
@@ -107,7 +107,7 @@ public class UploadService {
     }
 
     Page<OrderItem> getPaginatedOrders(final int pageNumber) {
-        LOGGER.info("Fetching the paginated residents from the dB.");
+        LOGGER.info("Fetching paginated orders");
         final Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE);
         return orderRepository.findAll(pageable);
     }

@@ -25,16 +25,6 @@ spring:
     url: "jdbc:postgresql://0.0.0.0:54320/postgres"
     username: postgres
     password: my_password
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health, info, prometheus, loggers, metrics
-  endpoint:
-    health:
-      show-details: always
-    loggers:
-      enabled: true
 
 logging:
   level:

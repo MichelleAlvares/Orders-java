@@ -7,10 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.function.Predicate;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.IntStream;
 
 @Service
@@ -18,19 +17,46 @@ public class Util {
     @Value("${file.extension}")
     private String csvExtension;
 
-    public static Predicate<Object> isNotNull = Objects::nonNull;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
-    public void validateRecord(CSVRecord record, List<OrderItem> orders){
-        for(int i =0; i<14; i++){
-            if(record.get(i) == null)
-                return;
+    public void validateAndAddRecord(CSVRecord record, List<OrderItem> orders) {
+
+        if (validRecord(record)) {
+            OrderItem order = new OrderItem(record.get("Region"), record.get("Country"), record.get("Item Type"), record.get("Sales Channel"),
+                    record.get("Order Priority"), record.get("Order Date"), Integer.parseInt(record.get("Order ID")), record.get("Ship Date"),
+                    Integer.parseInt(record.get("Units Sold")), Float.parseFloat(record.get("Unit Price")), Float.parseFloat(record.get("Unit Cost")),
+                    Float.parseFloat(record.get("Total Revenue")), Float.parseFloat(record.get("Total cost")), Float.parseFloat(record.get("Total Profit")),
+                    generateNRIC());
+            orders.add(order);
         }
-        OrderItem order = new OrderItem(record.get("Region"), record.get("Country"), record.get("Item Type"), record.get("Sales Channel"),
-                record.get("Order Priority"), record.get("Order Date"), Integer.parseInt(record.get("Order ID")), record.get("Ship Date"),
-                Integer.parseInt(record.get("Units Sold")), Float.parseFloat(record.get("Unit Price")), Float.parseFloat(record.get("Unit Cost")),
-                Float.parseFloat(record.get("Total Revenue")), Float.parseFloat(record.get("Total cost")), Float.parseFloat(record.get("Total Profit")),
-                generateNRIC());
-        orders.add(order);
+    }
+
+    boolean validRecord(CSVRecord record) {
+        for (int i = 0; i < 14; i++) {
+            if (record.get(i) == null)
+                return false;
+            if (i == 5 || i == 7) //Date records
+                if (!validDate(record.get(i))) {
+                    return false;
+                }
+            if (i == 3) //Sales channel
+                if (!AppConstants.salesChannels.contains(record.get(i)))
+                    return false;
+            if (i == 4) //order priority
+                if (!AppConstants.orderPriorityList.contains(record.get(i)))
+                    return false;
+        }
+        return true;
+    }
+
+    boolean validDate(String date) {
+        dateFormat.setLenient(false);
+        try {
+            dateFormat.parse(date);
+        } catch (ParseException e) {
+            return false;
+        }
+        return true;
     }
 
     public boolean isCSVFile(MultipartFile file) {

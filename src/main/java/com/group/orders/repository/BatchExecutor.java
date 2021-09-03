@@ -35,12 +35,12 @@ public class BatchExecutor {
     private Logger LOGGER = LoggerFactory.getLogger(UploadService.class);
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void batchInsertAsync(List<OrderItem> users) throws InterruptedException, ExecutionException {
+    public void batchInsertAsync(List<OrderItem> orders) throws InterruptedException, ExecutionException {
         StopWatch timer = new StopWatch();
         String sql = "INSERT INTO ORDER_ITEM (REGION, COUNTRY, ITEM_TYPE, SALES_CHANNEL, ORDER_PRIORITY, ORDER_DATE, ORDER_ID, SHIP_DATE, UNITS_SOLD, UNIT_PRICE, UNIT_COST, TOTAL_REVENUE, TOTAL_COST, TOTAL_PROFIT, NRIC)"
                 + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         final AtomicInteger sublists = new AtomicInteger();
-        CompletableFuture[] futures = users.stream()
+        CompletableFuture[] futures = orders.stream()
                 .collect(Collectors.groupingBy(t -> sublists.getAndIncrement() / batchSize))
                 .values()
                 .stream()

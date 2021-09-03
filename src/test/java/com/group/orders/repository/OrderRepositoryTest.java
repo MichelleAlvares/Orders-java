@@ -2,6 +2,7 @@ package com.group.orders.repository;
 
 import com.group.orders.constants.CommonMethods;
 import com.group.orders.model.OrderItem;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +39,9 @@ public class OrderRepositoryTest {
     }
 
     @Test
+    @Ignore
     public void testListOrderItems() {
         List<OrderItem> orderItems = orderRepository.findAll();
-        System.out.println((orderItems).size());
         assertEquals(0, orderItems.size());
     }
 
@@ -49,7 +50,6 @@ public class OrderRepositoryTest {
     public void testTruncate() {
         orderRepository.truncate();
         List<OrderItem> orderItems = orderRepository.findAll();
-        System.out.println((orderItems).size());
         assertEquals(orderItems.size(), 0);
     }
 }

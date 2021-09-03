@@ -2,16 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>Index page</title>
+    <title>Display page</title>
     <th:block th:include="base :: head"/>
-<!--    <style type="text/css">
-
-        th, td {
-        white-space: nowrap;
-        }
-
-
-    </style>-->
 </head>
 <body>
 <div class="container">
@@ -57,8 +49,7 @@
         </tr>
         </tbody>
     </table>
-    <!-- Pagination control -->
-    <!-- Hardcoding the default page-size as 10. User can create a dropdown to select the different page-sizes. -->
+
     <div th:if="${responseEntity.page['totalPages'] > 1}">
         <nav>
             <ul class="pagination justify-content-center flex-wrap">
