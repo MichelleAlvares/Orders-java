@@ -50,7 +50,7 @@ public class BatchExecutor {
         timer.start();
         run.get();
         timer.stop();
-        LOGGER.info("batchInsertAsync -> Time taken: " + timer.getTotalTimeSeconds());
+        LOGGER.info("Time taken: " + timer.getTotalTimeSeconds());
     }
 
     private CompletableFuture<Void> runBatchInsert(List<OrderItem> orders, String sql) {
