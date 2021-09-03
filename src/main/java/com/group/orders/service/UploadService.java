@@ -3,7 +3,6 @@ package com.group.orders.service;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.StreamSupport;
 
 import com.group.orders.repository.BatchExecutor;
 import com.group.orders.repository.OrderRepository;
@@ -78,9 +77,10 @@ public class UploadService {
 
             Iterable<CSVRecord> records = csvParser.getRecords();
 
-            for (CSVRecord record : records) {
+            records.forEach(record -> {
                 util.validateRecord(record, orders);
-            }
+            });
+
             LOGGER.info("NRIC numbers generated {}", orders.size());
 
         } catch (Exception e) {
@@ -112,7 +112,7 @@ public class UploadService {
         return orderRepository.findAll(pageable);
     }
 
-    public OrderDto createResponseDto(final Page<OrderItem> orderItemPage, final int pageNumber) {
+    private OrderDto createResponseDto(final Page<OrderItem> orderItemPage, final int pageNumber) {
         final Map<String, Integer> page = new HashMap<>();
         page.put("currentPage", pageNumber);
         page.put("totalPages", orderItemPage.getTotalPages());

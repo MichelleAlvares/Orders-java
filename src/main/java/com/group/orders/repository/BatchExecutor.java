@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,7 +50,7 @@ public class BatchExecutor {
         timer.start();
         run.get();
         timer.stop();
-        LOGGER.info("batchInsertAsync -> Total time in seconds: " + timer.getTotalTimeSeconds());
+        LOGGER.info("batchInsertAsync -> Time taken: " + timer.getTotalTimeSeconds());
     }
 
     private CompletableFuture<Void> runBatchInsert(List<OrderItem> orders, String sql) {

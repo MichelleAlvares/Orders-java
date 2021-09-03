@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 
 @Service
 public class Util {
@@ -54,12 +55,12 @@ public class Util {
     }
 
     String appendLastChar(char firstLetter, int num) {
-        int sum = 0;
+        int sum;
         int remainder;
         String strNum = String.valueOf(num);
-        for (int i = 0; i < strNum.length(); i++) {
-            sum += AppConstants.multipliers.get(i) * Integer.parseInt(String.valueOf(strNum.charAt(i)));
-        }
+
+        sum = IntStream.range(0, strNum.length()).map(i -> AppConstants.multipliers.get(i) * Integer.parseInt(String.valueOf(strNum.charAt(i)))).sum();
+
         if (AppConstants.add4Characters.contains(firstLetter))
             sum += 4;
 
