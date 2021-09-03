@@ -34,6 +34,12 @@ public class UploadControllerTest {
     private WebApplicationContext webApplicationContext;
 
     @Test
+    public void testGetIndexPage() throws Exception {
+        mockMvc.perform(get("/", 5))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     public void testGetDisplay() throws Exception {
         when(uploadService.getOrders(anyInt())).thenReturn(CommonMethods.response());
 

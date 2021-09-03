@@ -33,14 +33,8 @@ public class UploadController {
 
     @GetMapping(value = "/csv/{page}")
     public String getOrders(@PathVariable(name = "page") final int pageNumber, final Model model) {
-        try {
-            model.addAttribute("status", true);
-            model.addAttribute("responseEntity", uploadService.getOrders(pageNumber));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            model.addAttribute("message", "An error occurred while processing the CSV file.");
-            model.addAttribute("status", false);
-        }
+        model.addAttribute("status", true);
+        model.addAttribute("responseEntity", uploadService.getOrders(pageNumber));
         return "display";
     }
 }

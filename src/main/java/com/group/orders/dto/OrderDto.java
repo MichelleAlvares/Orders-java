@@ -11,7 +11,7 @@ public class OrderDto {
     private final List<OrderItem> orders;
     private final Map<String, Integer> page;
 
-    public OrderDto(final List<OrderItem> orders, final Map<String, Integer> page) {
+    private OrderDto(final List<OrderItem> orders, final Map<String, Integer> page) {
         this.orders = new ArrayList<>(orders);
         this.page = new HashMap<>(page);
     }
