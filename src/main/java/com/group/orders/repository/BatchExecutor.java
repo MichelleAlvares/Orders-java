@@ -39,12 +39,12 @@ public class BatchExecutor {
         StopWatch timer = new StopWatch();
         String sql = "INSERT INTO ORDER_ITEM (REGION, COUNTRY, ITEM_TYPE, SALES_CHANNEL, ORDER_PRIORITY, ORDER_DATE, ORDER_ID, SHIP_DATE, UNITS_SOLD, UNIT_PRICE, UNIT_COST, TOTAL_REVENUE, TOTAL_COST, TOTAL_PROFIT, NRIC)"
                 + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-        final AtomicInteger sublists = new AtomicInteger();
+        final AtomicInteger batches = new AtomicInteger();
         CompletableFuture[] futures = orders.stream()
-                .collect(Collectors.groupingBy(t -> sublists.getAndIncrement() / batchSize))
+                .collect(Collectors.groupingBy(t -> batches.getAndIncrement() / batchSize))
                 .values()
                 .stream()
-                .map(ul -> runBatchInsert(ul, sql))
+                .map(orderList -> runBatchInsert(orderList, sql))
                 .toArray(CompletableFuture[]::new);
         CompletableFuture<Void> run = CompletableFuture.allOf(futures);
         timer.start();
